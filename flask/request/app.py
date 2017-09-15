@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+from os import urandom
 from flask import Flask,request,abort,session
 
 app = Flask(__name__)
@@ -15,13 +15,13 @@ def abort_request(status):
 #session set
 @app.route("/session/<name>/<value>", methods = ["POST"])
 def session_post(name,value):
-	session["name"] = value
+	session[name] = value
 	return "add success"
 
 #session get
 @app.route("/session/<name>", methods = ["GET"])
 def session_get(name):
-	return session[name]
+	return session[name] if  session.has_key(name) else "not key %s" % name
 	
 #session delete
 @app.route("/session/<name>", methods = ["DELETE"])
@@ -39,5 +39,6 @@ def req():
 
 
 if __name__ == "__main__":
+	app.secret_key = urandom(32)
 	app.run(debug = True)
 #	app.run()
